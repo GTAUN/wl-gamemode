@@ -21,15 +21,15 @@
 组件
 -----------------
 目前以下组件已被计划开发：
-* 'wl-account' 账号系统
-* 'wl-chat-channel' 聊天频道系统
-* 'wl-component-manager' 组件管理器 (RCON命令行CUI 和 对话框GUI)
-* 'wl-admin' 管理员管理系统
-* 'wl-race' 赛车系统
-* 'wl-vehicle' 车辆管理系统
-* 'wl-teleport' 传送点和世界切换系统
-* 'wl-simple-dm' 简易DM系统
-* 'wl-language' 多语言支持
+* `wl-account` 账号系统
+* `wl-chat-channel` 聊天频道系统
+* `wl-component-manager` 组件管理器 (RCON命令行CUI 和 对话框GUI)
+* `wl-admin` 管理员管理系统
+* `wl-race` 赛车系统
+* `wl-vehicle` 车辆管理系统
+* `wl-teleport` 传送点和世界切换系统
+* `wl-simple-dm` 简易DM系统
+* `wl-language` 多语言支持
 
 警告
 -----------------
