@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
+	
 	<repositories>
 		<repository>
 			<id>gtaun-public-repo</id>
@@ -9,40 +9,40 @@
 			<url>http://repo.gtaun.net/content/groups/public</url>
 		</repository>
 	</repositories>
-
+	
 	<parent>
 		<groupId>net.gtaun.parent</groupId>
-		<artifactId>shoebill-resource-parent</artifactId>
+		<artifactId>gtaun-shoebill-resource-parent</artifactId>
 		<version>1</version>
 	</parent>
-
+	
 	<groupId>net.gtaun.wl</groupId>
 	<artifactId>wl-gamemode</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
-
+	
 	<name>wl-gamemode</name>
 	<description>GTAUN WL Gamemode</description>
 	<url>https://github.com/GTAUN/wl-gamemode</url>
-
+	
 	<properties>
 		<shoebill.version>0.2.0-SNAPSHOT</shoebill.version>
 		<build.number>0</build.number>
 	</properties>
-
+	
 	<licenses>
 		<license>
 			<name>GNU General Public License, version 2 (GPL-2.0)</name>
 			<url>http://www.gnu.org/licenses/gpl-2.0.html</url>
 		</license>
 	</licenses>
-
+	
 	<scm>
 		<url>https://github.com/GTAUN/wl-gamemode</url>
 		<connection>scm:git:git://github.com/GTAUN/wl-gamemode.git</connection>
 		<developerConnection>scm:git:git@github.com:GTAUN/wl-gamemode.git</developerConnection>
 	</scm>
-
+	
 	<developers>
 		<developer>
 			<name>MK124</name>
@@ -54,82 +54,12 @@
 			<timezone>+8</timezone>
 		</developer>
 	</developers>
-
+	
 	<ciManagement>
 		<system>jenkins</system>
 		<url>http://ci.gtaun.net</url>
 	</ciManagement>
-
+	
 	<dependencies>
 	</dependencies>
-
-	<build>
-		<resources>
-			<resource>
-				<targetPath>.</targetPath>
-				<directory>${basedir}/src/main/resources</directory>
-				<filtering>false</filtering>
-				<includes>
-				</includes>
-			</resource>
-
-			<resource>
-				<targetPath>.</targetPath>
-				<directory>${basedir}/src/main/resources</directory>
-				<filtering>true</filtering>
-				<includes>
-					<include>gamemode.yml</include>
-				</includes>
-			</resource>
-		</resources>
-
-		<plugins>
-			<plugin>
-				<groupId>com.keyboardsamurais.maven</groupId>
-				<artifactId>maven-timestamp-plugin</artifactId>
-				<version>1.0</version>
-				<configuration>
-					<propertyName>build.timestamp</propertyName>
-					<timestampPattern>yyyy-MM-dd HH:mm:ss z (Z)</timestampPattern>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>create</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>com.keyboardsamurais.maven</groupId>
-										<artifactId>maven-timestamp-plugin</artifactId>
-										<versionRange>[1.0,)</versionRange>
-										<goals>
-											<goal>create</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
 </project>
