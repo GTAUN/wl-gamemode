@@ -8,7 +8,7 @@
 
 项目和原版未来世界没有任何直接的关系。
 但是，仍然感谢原版未来世界的所有贡献者的无私贡献。
-[点击这里](http://www.gtabbs.com/read-gta-tid-2593634.html)可以访问到原版未来世界的发布帖。
+[点击这里](http://www.gtabbs.com/read-gta-tid-2593634.html) 可以访问到原版未来世界的发布帖。
 
 开发
 -----------------
@@ -25,7 +25,7 @@
 * `wl-chat-channel` 聊天频道系统
 * `wl-admin` 管理员管理系统
 * `wl-race` 赛车系统
-* `wl-vehicle` 车辆管理系统
+* `wl-vehicle-manager` 车辆管理系统
 * `wl-teleport` 传送点和世界切换系统
 * `wl-simple-dm` 简易DM系统
 * `wl-language` 多语言支持
