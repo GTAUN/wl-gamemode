@@ -65,6 +65,8 @@ public class PlayerHandler extends AbstractShoebillContext
 	{
 		super(shoebill, rootEventManager);
 		random = new Random();
+		
+		init();
 	}
 	
 	@Override
@@ -95,14 +97,15 @@ public class PlayerHandler extends AbstractShoebillContext
 		public void onPlayerConnect(PlayerConnectEvent event)
 		{
 			Player player = event.getPlayer();
-			player.sendGameText(5000, 5, "Welcome to ~r~The New WL-World~w~!!");
-			player.sendMessage(Color.PURPLE, "欢迎来到新未来世界服务器。");
-			
-			player.sendDeathMessage(null, WeaponModel.CONNECT);
 			
 			Color color = new Color(random.nextInt() << 8 | 0xFF);
 			while (color.getY()<128) color = new Color(random.nextInt() << 8 | 0xFF);
 			player.setColor(color);
+			
+			player.sendGameText(5000, 5, "Welcome to ~r~The New WL-World~w~!!");
+			player.sendMessage(Color.PURPLE, "欢迎来到新未来世界服务器。");
+			
+			player.sendDeathMessage(null, WeaponModel.CONNECT);
 		}
 		
 		protected void onPlayerDisconnect(PlayerDisconnectEvent event)
@@ -156,10 +159,10 @@ public class PlayerHandler extends AbstractShoebillContext
 				player.sendMessage(Color.WHITE, player.getLocation().toString());
 				break;
 			
-			case "/tp":
+			case "/tppos":
 				if (args.size() < 3)
 				{
-					player.sendMessage(Color.WHITE, "Usage: /tp [x] [y] [z]");
+					player.sendMessage(Color.WHITE, "Usage: /tppos [x] [y] [z]");
 					event.setProcessed();
 					return;
 				}
