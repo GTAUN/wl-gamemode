@@ -1,4 +1,4 @@
-class: net.gtaun.wl.WlGamemode
+class: net.gtaun.wl.gamemode.WlGamemode
 name: WL Gamemode
 version: 0.1.0-SNAPSHOT
 buildNumber: ${build.number}

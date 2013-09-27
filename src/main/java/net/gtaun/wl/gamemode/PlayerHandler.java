@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.gtaun.wl;
+package net.gtaun.wl.gamemode;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -109,9 +109,6 @@ public class PlayerHandler extends AbstractShoebillContext
 	
 	private PlayerEventHandler playerEventHandler = new PlayerEventHandler()
 	{
-		private Random random = new Random();
-		
-		
 		public void onPlayerConnect(PlayerConnectEvent event)
 		{
 			Player player = event.getPlayer();
