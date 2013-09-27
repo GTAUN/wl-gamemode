@@ -25,6 +25,8 @@ import java.util.Random;
 
 import net.gtaun.shoebill.Shoebill;
 import net.gtaun.shoebill.common.AbstractShoebillContext;
+import net.gtaun.shoebill.common.dialog.AbstractDialog;
+import net.gtaun.shoebill.constant.PlayerKey;
 import net.gtaun.shoebill.constant.WeaponModel;
 import net.gtaun.shoebill.data.Color;
 import net.gtaun.shoebill.data.Vector3D;
@@ -33,11 +35,17 @@ import net.gtaun.shoebill.event.player.PlayerCommandEvent;
 import net.gtaun.shoebill.event.player.PlayerConnectEvent;
 import net.gtaun.shoebill.event.player.PlayerDeathEvent;
 import net.gtaun.shoebill.event.player.PlayerDisconnectEvent;
+import net.gtaun.shoebill.event.player.PlayerKeyStateChangeEvent;
 import net.gtaun.shoebill.event.player.PlayerRequestClassEvent;
 import net.gtaun.shoebill.event.player.PlayerSpawnEvent;
 import net.gtaun.shoebill.object.Player;
+import net.gtaun.shoebill.object.PlayerKeyState;
 import net.gtaun.util.event.EventManager;
 import net.gtaun.util.event.EventManager.HandlerPriority;
+import net.gtaun.wl.common.dialog.AbstractListDialog;
+import net.gtaun.wl.common.dialog.AbstractPageListDialog;
+import net.gtaun.wl.gamemode.event.GameListDialogShowEvent;
+import net.gtaun.wl.gamemode.event.MainMenuDialogShowEvent;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -97,6 +105,8 @@ public class PlayerHandler extends AbstractShoebillContext
 		eventManager.registerHandler(PlayerDeathEvent.class, playerEventHandler, HandlerPriority.NORMAL);
 		eventManager.registerHandler(PlayerRequestClassEvent.class, playerEventHandler, HandlerPriority.NORMAL);
 		
+		eventManager.registerHandler(PlayerKeyStateChangeEvent.class, playerEventHandler, HandlerPriority.HIGHEST);
+		
 		eventManager.registerHandler(PlayerCommandEvent.class, playerEventHandler, HandlerPriority.NORMAL);
 		eventManager.registerHandler(PlayerCommandEvent.class, playerEventHandlerBottom, HandlerPriority.BOTTOM);
 	}
@@ -105,6 +115,28 @@ public class PlayerHandler extends AbstractShoebillContext
 	protected void onDestroy()
 	{
 		
+	}
+	
+	public void showMainMenuDialog(Player player, AbstractDialog parentDialog)
+	{
+		if (parentDialog == null) player.playSound(1083, player.getLocation());
+		
+		MainMenuDialogShowEvent dialogShowEvent = new MainMenuDialogShowEvent(player, shoebill, eventManager, parentDialog);
+		eventManager.dispatchEvent(dialogShowEvent);
+		
+		AbstractListDialog dialog = dialogShowEvent.generateDialog("新未来世界: 主菜单");
+		dialog.show();
+	}
+	
+	public void showGameListDialog(Player player, AbstractDialog parentDialog)
+	{
+		if (parentDialog == null) player.playSound(1083, player.getLocation());
+		
+		GameListDialogShowEvent dialogShowEvent = new GameListDialogShowEvent(player, shoebill, eventManager, parentDialog);
+		eventManager.dispatchEvent(dialogShowEvent);
+		
+		AbstractPageListDialog dialog = dialogShowEvent.generatePagedDialog("新未来世界: 参与比赛");
+		dialog.show();
 	}
 	
 	private PlayerEventHandler playerEventHandler = new PlayerEventHandler()
@@ -150,6 +182,21 @@ public class PlayerHandler extends AbstractShoebillContext
 		{
 			Player player = event.getPlayer();
 			setupForClassSelection(player);
+		}
+		
+		protected void onPlayerKeyStateChange(PlayerKeyStateChangeEvent event)
+		{
+			Player player = event.getPlayer();
+			PlayerKeyState keyState = player.getKeyState();
+			
+			if (keyState.isAccurateKeyPressed(PlayerKey.NO))
+			{
+				showMainMenuDialog(player, null);
+			}
+			else if (keyState.isAccurateKeyPressed(PlayerKey.YES))
+			{
+				showGameListDialog(player, null);
+			}
 		}
 		
 		public void onPlayerCommand(PlayerCommandEvent event)
