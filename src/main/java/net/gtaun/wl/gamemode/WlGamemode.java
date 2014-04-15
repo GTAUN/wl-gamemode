@@ -25,8 +25,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
-import net.gtaun.shoebill.SampObjectFactory;
-import net.gtaun.shoebill.SampObjectStore;
+import net.gtaun.shoebill.SampObjectManager;
 import net.gtaun.shoebill.constant.PlayerMarkerMode;
 import net.gtaun.shoebill.object.Server;
 import net.gtaun.shoebill.object.World;
@@ -62,25 +61,24 @@ public class WlGamemode extends Gamemode
 	{
 		logger = getLogger();
 		
-		final SampObjectStore store = getShoebill().getSampObjectStore();
-		final SampObjectFactory factory = getShoebill().getSampObjectFactory();
+		final SampObjectManager objectManager = SampObjectManager.get();
 		final EventManager eventManager = getEventManager();
 		
-		Server server = store.getServer();
-		World world = store.getWorld();
+		Server server = Server.get();
+		World world = World.get();
 		
 		server.setGamemodeText("The New WL-World");
 		world.showPlayerMarkers(PlayerMarkerMode.GLOBAL);
 		world.showNameTags(true);
 		world.enableStuntBonusForAll(false);
 		
-		factory.createPickup(371, 15, 1710.3359f, 1614.3585f, 10.1191f, 0);
-		factory.createPickup(371, 15, 1964.4523f, 1917.0341f, 130.9375f, 0);
-		factory.createPickup(371, 15, 2055.7258f, 2395.8589f, 150.4766f, 0);
-		factory.createPickup(371, 15, 2265.0120f, 1672.3837f, 94.9219f, 0);
-		factory.createPickup(371, 15, 2265.9739f, 1623.4060f, 94.9219f, 0);
+		objectManager.createPickup(371, 15, 1710.3359f, 1614.3585f, 10.1191f, 0);
+		objectManager.createPickup(371, 15, 1964.4523f, 1917.0341f, 130.9375f, 0);
+		objectManager.createPickup(371, 15, 2055.7258f, 2395.8589f, 150.4766f, 0);
+		objectManager.createPickup(371, 15, 2265.0120f, 1672.3837f, 94.9219f, 0);
+		objectManager.createPickup(371, 15, 2265.9739f, 1623.4060f, 94.9219f, 0);
 		
-		playerManager = new PlayerHandler(getShoebill(), eventManager);
+		playerManager = new PlayerHandler(eventManager);
 		
 		File playerClassFile = new File(getDataDir(), "class.txt");
 		loadClass(world, playerClassFile);

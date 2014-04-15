@@ -23,14 +23,12 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
-import net.gtaun.shoebill.Shoebill;
 import net.gtaun.shoebill.common.AbstractShoebillContext;
 import net.gtaun.shoebill.common.dialog.AbstractDialog;
 import net.gtaun.shoebill.constant.PlayerKey;
 import net.gtaun.shoebill.constant.WeaponModel;
 import net.gtaun.shoebill.data.Color;
 import net.gtaun.shoebill.data.Vector3D;
-import net.gtaun.shoebill.event.PlayerEventHandler;
 import net.gtaun.shoebill.event.player.PlayerCommandEvent;
 import net.gtaun.shoebill.event.player.PlayerConnectEvent;
 import net.gtaun.shoebill.event.player.PlayerDeathEvent;
@@ -41,11 +39,10 @@ import net.gtaun.shoebill.event.player.PlayerSpawnEvent;
 import net.gtaun.shoebill.object.Player;
 import net.gtaun.shoebill.object.PlayerKeyState;
 import net.gtaun.util.event.EventManager;
-import net.gtaun.util.event.EventManager.HandlerPriority;
-import net.gtaun.wl.common.dialog.AbstractListDialog;
-import net.gtaun.wl.common.dialog.AbstractPageListDialog;
-import net.gtaun.wl.gamemode.event.GameListDialogShowEvent;
-import net.gtaun.wl.gamemode.event.MainMenuDialogShowEvent;
+import net.gtaun.util.event.HandlerPriority;
+import net.gtaun.wl.common.dialog.WlListDialog;
+import net.gtaun.wl.gamemode.event.GameListDialogExtendEvent;
+import net.gtaun.wl.gamemode.event.MainMenuDialogExtendEvent;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -53,43 +50,43 @@ public class PlayerHandler extends AbstractShoebillContext
 {
 	private static final Vector3D[] RANDOM_SPAWN_POS = 
 	{
-		new Vector3D(1958.3783f, 1343.1572f, 15.3746f).immutable(),
-		new Vector3D(2199.6531f, 1393.3678f, 10.8203f).immutable(),
-		new Vector3D(2483.5977f, 1222.0825f, 10.8203f).immutable(), 
-		new Vector3D(2637.2712f, 1129.2743f, 11.1797f).immutable(),
-		new Vector3D(2000.0106f, 1521.1111f, 17.0625f).immutable(),
-		new Vector3D(2024.8190f, 1917.9425f, 12.3386f).immutable(),
-		new Vector3D(2261.9048f, 2035.9547f, 10.8203f).immutable(),
-		new Vector3D(2262.0986f, 2398.6572f, 10.8203f).immutable(),
-		new Vector3D(2244.2566f, 2523.7280f, 10.8203f).immutable(),
-		new Vector3D(2335.3228f, 2786.4478f, 10.8203f).immutable(),
-		new Vector3D(2150.0186f, 2734.2297f, 11.1763f).immutable(),
-		new Vector3D(2158.0811f, 2797.5488f, 10.8203f).immutable(),
-		new Vector3D(1969.8301f, 2722.8564f, 10.8203f).immutable(),
-		new Vector3D(1652.0555f, 2709.4072f, 10.8265f).immutable(),
-		new Vector3D(1564.0052f, 2756.9463f, 10.8203f).immutable(),
-		new Vector3D(1271.5452f, 2554.0227f, 10.8203f).immutable(),
-		new Vector3D(1441.5894f, 2567.9099f, 10.8203f).immutable(),
-		new Vector3D(1480.6473f, 2213.5718f, 11.0234f).immutable(),
-		new Vector3D(1400.5906f, 2225.6960f, 11.0234f).immutable(),
-		new Vector3D(1598.8419f, 2221.5676f, 11.0625f).immutable(),
-		new Vector3D(1318.7759f, 1251.3580f, 10.8203f).immutable(),
-		new Vector3D(1558.0731f, 1007.8292f, 10.8125f).immutable(),
-		new Vector3D(-857.0551f, 1536.6832f, 22.5870f).immutable(),		// Out of Town Spawns
-		new Vector3D(817.3494f, 856.5039f, 12.7891f).immutable(),
-		new Vector3D(116.9315f, 1110.1823f, 13.6094f).immutable(),
-		new Vector3D(-18.8529f, 1176.0159f, 19.5634f).immutable(),
-		new Vector3D(-315.0575f, 1774.0636f, 43.6406f).immutable(),
-		new Vector3D(1705.2347f, 1025.6808f, 10.8203f).immutable()
+		new Vector3D(1958.3783f, 1343.1572f, 15.3746f),
+		new Vector3D(2199.6531f, 1393.3678f, 10.8203f),
+		new Vector3D(2483.5977f, 1222.0825f, 10.8203f), 
+		new Vector3D(2637.2712f, 1129.2743f, 11.1797f),
+		new Vector3D(2000.0106f, 1521.1111f, 17.0625f),
+		new Vector3D(2024.8190f, 1917.9425f, 12.3386f),
+		new Vector3D(2261.9048f, 2035.9547f, 10.8203f),
+		new Vector3D(2262.0986f, 2398.6572f, 10.8203f),
+		new Vector3D(2244.2566f, 2523.7280f, 10.8203f),
+		new Vector3D(2335.3228f, 2786.4478f, 10.8203f),
+		new Vector3D(2150.0186f, 2734.2297f, 11.1763f),
+		new Vector3D(2158.0811f, 2797.5488f, 10.8203f),
+		new Vector3D(1969.8301f, 2722.8564f, 10.8203f),
+		new Vector3D(1652.0555f, 2709.4072f, 10.8265f),
+		new Vector3D(1564.0052f, 2756.9463f, 10.8203f),
+		new Vector3D(1271.5452f, 2554.0227f, 10.8203f),
+		new Vector3D(1441.5894f, 2567.9099f, 10.8203f),
+		new Vector3D(1480.6473f, 2213.5718f, 11.0234f),
+		new Vector3D(1400.5906f, 2225.6960f, 11.0234f),
+		new Vector3D(1598.8419f, 2221.5676f, 11.0625f),
+		new Vector3D(1318.7759f, 1251.3580f, 10.8203f),
+		new Vector3D(1558.0731f, 1007.8292f, 10.8125f),
+		new Vector3D(-857.0551f, 1536.6832f, 22.5870f),		// Out of Town Spawns
+		new Vector3D(817.3494f, 856.5039f, 12.7891f),
+		new Vector3D(116.9315f, 1110.1823f, 13.6094f),
+		new Vector3D(-18.8529f, 1176.0159f, 19.5634f),
+		new Vector3D(-315.0575f, 1774.0636f, 43.6406f),
+		new Vector3D(1705.2347f, 1025.6808f, 10.8203f)
 	};
 	
 	
 	private Random random;
 	
 	
-	public PlayerHandler(Shoebill shoebill, EventManager rootEventManager)
+	public PlayerHandler(EventManager rootEventManager)
 	{
-		super(shoebill, rootEventManager);
+		super(rootEventManager);
 		random = new Random();
 		
 		init();
@@ -98,52 +95,9 @@ public class PlayerHandler extends AbstractShoebillContext
 	@Override
 	protected void onInit()
 	{
-		eventManager.registerHandler(PlayerConnectEvent.class, playerEventHandler, HandlerPriority.NORMAL);
-		eventManager.registerHandler(PlayerDisconnectEvent.class, playerEventHandler, HandlerPriority.NORMAL);
-		
-		eventManager.registerHandler(PlayerSpawnEvent.class, playerEventHandler, HandlerPriority.NORMAL);
-		eventManager.registerHandler(PlayerDeathEvent.class, playerEventHandler, HandlerPriority.NORMAL);
-		eventManager.registerHandler(PlayerRequestClassEvent.class, playerEventHandler, HandlerPriority.NORMAL);
-		
-		eventManager.registerHandler(PlayerKeyStateChangeEvent.class, playerEventHandler, HandlerPriority.HIGHEST);
-		
-		eventManager.registerHandler(PlayerCommandEvent.class, playerEventHandler, HandlerPriority.NORMAL);
-		eventManager.registerHandler(PlayerCommandEvent.class, playerEventHandlerBottom, HandlerPriority.BOTTOM);
-	}
-	
-	@Override
-	protected void onDestroy()
-	{
-		
-	}
-	
-	public void showMainMenuDialog(Player player, AbstractDialog parentDialog)
-	{
-		if (parentDialog == null) player.playSound(1083, player.getLocation());
-		
-		MainMenuDialogShowEvent dialogShowEvent = new MainMenuDialogShowEvent(player, shoebill, eventManager, parentDialog);
-		eventManager.dispatchEvent(dialogShowEvent);
-		
-		AbstractListDialog dialog = dialogShowEvent.generateDialog("新未来世界: 主菜单");
-		dialog.show();
-	}
-	
-	public void showGameListDialog(Player player, AbstractDialog parentDialog)
-	{
-		if (parentDialog == null) player.playSound(1083, player.getLocation());
-		
-		GameListDialogShowEvent dialogShowEvent = new GameListDialogShowEvent(player, shoebill, eventManager, parentDialog);
-		eventManager.dispatchEvent(dialogShowEvent);
-		
-		AbstractPageListDialog dialog = dialogShowEvent.generatePagedDialog("新未来世界: 参与比赛");
-		dialog.show();
-	}
-	
-	private PlayerEventHandler playerEventHandler = new PlayerEventHandler()
-	{
-		public void onPlayerConnect(PlayerConnectEvent event)
+		eventManager.registerHandler(PlayerConnectEvent.class, HandlerPriority.NORMAL, (e) ->
 		{
-			Player player = event.getPlayer();
+			Player player = e.getPlayer();
 			
 			Color color = new Color(random.nextInt() << 8 | 0xFF);
 			while (color.getY()<128) color = new Color(random.nextInt() << 8 | 0xFF);
@@ -153,40 +107,40 @@ public class PlayerHandler extends AbstractShoebillContext
 			player.sendMessage(Color.PURPLE, "欢迎来到新未来世界服务器。");
 			
 			player.sendDeathMessage(null, WeaponModel.CONNECT);
-		}
+		});
 		
-		protected void onPlayerDisconnect(PlayerDisconnectEvent event)
+		eventManager.registerHandler(PlayerDisconnectEvent.class, HandlerPriority.NORMAL, (e) ->
 		{
-			Player player = event.getPlayer();
+			Player player = e.getPlayer();
 			player.sendDeathMessage(null, WeaponModel.DISCONNECT);
-		}
+		});
 		
-		public void onPlayerSpawn(PlayerSpawnEvent event)
+		eventManager.registerHandler(PlayerSpawnEvent.class, HandlerPriority.NORMAL, (e) ->
 		{
-			Player player = event.getPlayer();
+			Player player = e.getPlayer();
 			player.toggleClock(false);
 			player.setTime(12, 0);
 			player.setWeather(0);
 			setRandomLocation(player);
-		}
+		});
 		
-		public void onPlayerDeath(PlayerDeathEvent event)
+		eventManager.registerHandler(PlayerDeathEvent.class, HandlerPriority.NORMAL, (e) ->
 		{
-			Player player = event.getPlayer();
-			Player killer = event.getKiller();
+			Player player = e.getPlayer();
+			Player killer = e.getKiller();
 			
-			player.sendDeathMessage(killer, event.getReason());
-		}
+			player.sendDeathMessage(killer, e.getReason());
+		});
 		
-		public void onPlayerRequestClass(PlayerRequestClassEvent event)
+		eventManager.registerHandler(PlayerRequestClassEvent.class, HandlerPriority.NORMAL, (e) ->
 		{
-			Player player = event.getPlayer();
+			Player player = e.getPlayer();
 			setupForClassSelection(player);
-		}
+		});
 		
-		protected void onPlayerKeyStateChange(PlayerKeyStateChangeEvent event)
+		eventManager.registerHandler(PlayerKeyStateChangeEvent.class, HandlerPriority.HIGHEST, (e) ->
 		{
-			Player player = event.getPlayer();
+			Player player = e.getPlayer();
 			PlayerKeyState keyState = player.getKeyState();
 			
 			if (keyState.isAccurateKeyPressed(PlayerKey.NO))
@@ -197,13 +151,13 @@ public class PlayerHandler extends AbstractShoebillContext
 			{
 				showGameListDialog(player, null);
 			}
-		}
+		});
 		
-		public void onPlayerCommand(PlayerCommandEvent event)
+		eventManager.registerHandler(PlayerCommandEvent.class, HandlerPriority.NORMAL, (e) ->
 		{
-			Player player = event.getPlayer();
+			Player player = e.getPlayer();
 			
-			String command = event.getCommand();
+			String command = e.getCommand();
 			String[] splits = command.split(" ", 2);
 			
 			String operation = splits[0].toLowerCase();
@@ -225,7 +179,7 @@ public class PlayerHandler extends AbstractShoebillContext
 				if (args.size() < 3)
 				{
 					player.sendMessage(Color.WHITE, "Usage: /tppos [x] [y] [z]");
-					event.setProcessed();
+					e.setProcessed();
 					return;
 				}
 				
@@ -233,65 +187,96 @@ public class PlayerHandler extends AbstractShoebillContext
 				float y = NumberUtils.toFloat(args.poll());
 				float z = NumberUtils.toFloat(args.poll());
 				player.setLocation(x, y, z);
-				event.setProcessed();
+				e.setProcessed();
 				return;
 				
 			case "/world":
 				if (args.size() < 1)
 				{
 					player.sendMessage(Color.WHITE, "Usage: /world [id]");
-					event.setProcessed();
+					e.setProcessed();
 					return;
 				}
 				
 				int worldId = NumberUtils.toInt(args.poll());
 				player.setWorld(worldId);
-				event.setProcessed();
+				e.setProcessed();
 				return;
 				
 			case "/interior":
 				if (args.size() < 1)
 				{
 					player.sendMessage(Color.WHITE, "Usage: /interior [id]");
-					event.setProcessed();
+					e.setProcessed();
 					return;
 				}
 				
 				int interior = NumberUtils.toInt(args.poll());
 				player.setInterior(interior);
-				event.setProcessed();
+				e.setProcessed();
 				return;
 				
 			case "/kill":
 				player.setHealth(0.0f);
-				event.setProcessed();
+				e.setProcessed();
 				return;
 				
 			case "/codepage":
 				if (args.size() < 1)
 				{
 					player.sendMessage(Color.WHITE, "Usage: /codepage [val]");
-					event.setProcessed();
+					e.setProcessed();
 					return;
 				}
 				
 				int codepage = NumberUtils.toInt(args.poll());
 				player.setCodepage(codepage);
-				event.setProcessed();
+				e.setProcessed();
 				return;
 			}
-		}
-	};
-	
-	private PlayerEventHandler playerEventHandlerBottom = new PlayerEventHandler()
-	{
-		public void onPlayerCommand(PlayerCommandEvent event)
+		});
+		
+		eventManager.registerHandler(PlayerCommandEvent.class, HandlerPriority.BOTTOM, (e) ->
 		{
-			Player player = event.getPlayer();
+			Player player = e.getPlayer();
 			player.sendMessage(Color.RED, "未知命令。");
-			event.setProcessed();
-		}
-	};
+			e.setProcessed();
+		});
+	}
+	
+	@Override
+	protected void onDestroy()
+	{
+		
+	}
+	
+	public void showMainMenuDialog(Player player, AbstractDialog parentDialog)
+	{
+		if (parentDialog == null) player.playSound(1083, player.getLocation());
+		
+		WlListDialog mainDialog = WlListDialog.create(player, rootEventManager)
+			.caption("新未来世界: 主菜单")
+			.build();
+		
+		MainMenuDialogExtendEvent dialogExtendEvent = new MainMenuDialogExtendEvent(player, eventManager, mainDialog);
+		eventManager.dispatchEvent(dialogExtendEvent);
+		
+		mainDialog.show();
+	}
+	
+	public void showGameListDialog(Player player, AbstractDialog parentDialog)
+	{
+		if (parentDialog == null) player.playSound(1083, player.getLocation());
+
+		WlListDialog mainDialog = WlListDialog.create(player, rootEventManager)
+			.caption("新未来世界: 参与比赛")
+			.build();
+		
+		GameListDialogExtendEvent dialogShowEvent = new GameListDialogExtendEvent(player, eventManager, mainDialog);
+		eventManager.dispatchEvent(dialogShowEvent);
+		
+		mainDialog.show();
+	}
 	
 	private void setRandomLocation(Player player)
 	{
