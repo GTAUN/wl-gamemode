@@ -23,6 +23,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
+
+
 import net.gtaun.shoebill.common.AbstractShoebillContext;
 import net.gtaun.shoebill.common.dialog.AbstractDialog;
 import net.gtaun.shoebill.constant.PlayerKey;
@@ -38,11 +40,15 @@ import net.gtaun.shoebill.event.player.PlayerRequestClassEvent;
 import net.gtaun.shoebill.event.player.PlayerSpawnEvent;
 import net.gtaun.shoebill.object.Player;
 import net.gtaun.shoebill.object.PlayerKeyState;
+import net.gtaun.shoebill.service.Service;
 import net.gtaun.util.event.EventManager;
 import net.gtaun.util.event.HandlerPriority;
 import net.gtaun.wl.common.dialog.WlListDialog;
 import net.gtaun.wl.gamemode.event.GameListDialogExtendEvent;
 import net.gtaun.wl.gamemode.event.MainMenuDialogExtendEvent;
+
+
+import net.gtaun.wl.lang.LanguageService;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -104,9 +110,13 @@ public class PlayerHandler extends AbstractShoebillContext
 			player.setColor(color);
 			
 			player.sendGameText(5000, 5, "Welcome to ~r~The New WL-World~w~!!");
-			player.sendMessage(Color.PURPLE, "欢迎来到新未来世界服务器。");
-			
 			player.sendDeathMessage(null, WeaponModel.CONNECT);
+			
+			LanguageService langService = Service.get(LanguageService.class);
+			langService.showLanguageSelectionDialog(player, (p, l) ->
+			{
+				player.sendMessage(Color.PURPLE, "欢迎来到新未来世界服务器。");
+			});
 		});
 		
 		eventManager.registerHandler(PlayerDisconnectEvent.class, HandlerPriority.NORMAL, (e) ->
