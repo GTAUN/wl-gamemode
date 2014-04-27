@@ -101,7 +101,7 @@ public class PlayerHandler extends AbstractShoebillContext
 	@Override
 	protected void onInit()
 	{
-		eventManager.registerHandler(PlayerConnectEvent.class, HandlerPriority.NORMAL, (e) ->
+		eventManager.registerHandler(PlayerConnectEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
 			
@@ -119,13 +119,13 @@ public class PlayerHandler extends AbstractShoebillContext
 			});
 		});
 		
-		eventManager.registerHandler(PlayerDisconnectEvent.class, HandlerPriority.NORMAL, (e) ->
+		eventManager.registerHandler(PlayerDisconnectEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
 			player.sendDeathMessage(null, WeaponModel.DISCONNECT);
 		});
 		
-		eventManager.registerHandler(PlayerSpawnEvent.class, HandlerPriority.NORMAL, (e) ->
+		eventManager.registerHandler(PlayerSpawnEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
 			player.toggleClock(false);
@@ -134,7 +134,7 @@ public class PlayerHandler extends AbstractShoebillContext
 			setRandomLocation(player);
 		});
 		
-		eventManager.registerHandler(PlayerDeathEvent.class, HandlerPriority.NORMAL, (e) ->
+		eventManager.registerHandler(PlayerDeathEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
 			Player killer = e.getKiller();
@@ -142,7 +142,7 @@ public class PlayerHandler extends AbstractShoebillContext
 			player.sendDeathMessage(killer, e.getReason());
 		});
 		
-		eventManager.registerHandler(PlayerRequestClassEvent.class, HandlerPriority.NORMAL, (e) ->
+		eventManager.registerHandler(PlayerRequestClassEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
 			setupForClassSelection(player);
@@ -163,7 +163,7 @@ public class PlayerHandler extends AbstractShoebillContext
 			}
 		});
 		
-		eventManager.registerHandler(PlayerCommandEvent.class, HandlerPriority.NORMAL, (e) ->
+		eventManager.registerHandler(PlayerCommandEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
 			
