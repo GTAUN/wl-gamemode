@@ -101,7 +101,7 @@ public class PlayerHandler extends AbstractShoebillContext
 	@Override
 	protected void onInit()
 	{
-		eventManager.registerHandler(PlayerConnectEvent.class, (e) ->
+		eventManagerNode.registerHandler(PlayerConnectEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
 			
@@ -119,13 +119,13 @@ public class PlayerHandler extends AbstractShoebillContext
 			});
 		});
 		
-		eventManager.registerHandler(PlayerDisconnectEvent.class, (e) ->
+		eventManagerNode.registerHandler(PlayerDisconnectEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
 			player.sendDeathMessage(null, WeaponModel.DISCONNECT);
 		});
 		
-		eventManager.registerHandler(PlayerSpawnEvent.class, (e) ->
+		eventManagerNode.registerHandler(PlayerSpawnEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
 			player.toggleClock(false);
@@ -134,7 +134,7 @@ public class PlayerHandler extends AbstractShoebillContext
 			setRandomLocation(player);
 		});
 		
-		eventManager.registerHandler(PlayerDeathEvent.class, (e) ->
+		eventManagerNode.registerHandler(PlayerDeathEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
 			Player killer = e.getKiller();
@@ -142,13 +142,13 @@ public class PlayerHandler extends AbstractShoebillContext
 			player.sendDeathMessage(killer, e.getReason());
 		});
 		
-		eventManager.registerHandler(PlayerRequestClassEvent.class, (e) ->
+		eventManagerNode.registerHandler(PlayerRequestClassEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
 			setupForClassSelection(player);
 		});
 		
-		eventManager.registerHandler(PlayerKeyStateChangeEvent.class, HandlerPriority.HIGHEST, (e) ->
+		eventManagerNode.registerHandler(PlayerKeyStateChangeEvent.class, HandlerPriority.HIGHEST, (e) ->
 		{
 			Player player = e.getPlayer();
 			PlayerKeyState keyState = player.getKeyState();
@@ -163,7 +163,7 @@ public class PlayerHandler extends AbstractShoebillContext
 			}
 		});
 		
-		eventManager.registerHandler(PlayerCommandEvent.class, (e) ->
+		eventManagerNode.registerHandler(PlayerCommandEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
 			
@@ -246,7 +246,7 @@ public class PlayerHandler extends AbstractShoebillContext
 			}
 		});
 		
-		eventManager.registerHandler(PlayerCommandEvent.class, HandlerPriority.BOTTOM, (e) ->
+		eventManagerNode.registerHandler(PlayerCommandEvent.class, HandlerPriority.BOTTOM, (e) ->
 		{
 			Player player = e.getPlayer();
 			player.sendMessage(Color.RED, "未知命令。");
@@ -268,8 +268,8 @@ public class PlayerHandler extends AbstractShoebillContext
 			.caption("新未来世界: 主菜单")
 			.build();
 		
-		MainMenuDialogExtendEvent dialogExtendEvent = new MainMenuDialogExtendEvent(player, eventManager, mainDialog);
-		eventManager.dispatchEvent(dialogExtendEvent);
+		MainMenuDialogExtendEvent dialogExtendEvent = new MainMenuDialogExtendEvent(player, eventManagerNode, mainDialog);
+		eventManagerNode.dispatchEvent(dialogExtendEvent);
 		
 		mainDialog.show();
 	}
@@ -282,8 +282,8 @@ public class PlayerHandler extends AbstractShoebillContext
 			.caption("新未来世界: 参与比赛")
 			.build();
 		
-		GameListDialogExtendEvent dialogShowEvent = new GameListDialogExtendEvent(player, eventManager, mainDialog);
-		eventManager.dispatchEvent(dialogShowEvent);
+		GameListDialogExtendEvent dialogShowEvent = new GameListDialogExtendEvent(player, eventManagerNode, mainDialog);
+		eventManagerNode.dispatchEvent(dialogShowEvent);
 		
 		mainDialog.show();
 	}
