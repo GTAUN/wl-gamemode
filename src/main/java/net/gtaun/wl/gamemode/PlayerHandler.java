@@ -262,7 +262,7 @@ public class PlayerHandler extends AbstractShoebillContext
 	
 	public void showMainMenuDialog(Player player, AbstractDialog parentDialog)
 	{
-		if (parentDialog == null) player.playSound(1083, player.getLocation());
+		if (parentDialog == null) player.playSound(1083);
 		
 		WlListDialog mainDialog = WlListDialog.create(player, rootEventManager)
 			.caption("新未来世界: 主菜单")
@@ -276,7 +276,7 @@ public class PlayerHandler extends AbstractShoebillContext
 	
 	public void showGameListDialog(Player player, AbstractDialog parentDialog)
 	{
-		if (parentDialog == null) player.playSound(1083, player.getLocation());
+		if (parentDialog == null) player.playSound(1083);
 
 		WlListDialog mainDialog = WlListDialog.create(player, rootEventManager)
 			.caption("新未来世界: 参与比赛")
