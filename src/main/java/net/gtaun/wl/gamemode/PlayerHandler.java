@@ -23,8 +23,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
-
-
 import net.gtaun.shoebill.common.AbstractShoebillContext;
 import net.gtaun.shoebill.common.dialog.AbstractDialog;
 import net.gtaun.shoebill.constant.PlayerKey;
@@ -46,19 +44,17 @@ import net.gtaun.util.event.HandlerPriority;
 import net.gtaun.wl.common.dialog.WlListDialog;
 import net.gtaun.wl.gamemode.event.GameListDialogExtendEvent;
 import net.gtaun.wl.gamemode.event.MainMenuDialogExtendEvent;
-
-
 import net.gtaun.wl.lang.LanguageService;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
 public class PlayerHandler extends AbstractShoebillContext
 {
-	private static final Vector3D[] RANDOM_SPAWN_POS = 
+	private static final Vector3D[] RANDOM_SPAWN_POS =
 	{
 		new Vector3D(1958.3783f, 1343.1572f, 15.3746f),
 		new Vector3D(2199.6531f, 1393.3678f, 10.8203f),
-		new Vector3D(2483.5977f, 1222.0825f, 10.8203f), 
+		new Vector3D(2483.5977f, 1222.0825f, 10.8203f),
 		new Vector3D(2637.2712f, 1129.2743f, 11.1797f),
 		new Vector3D(2000.0106f, 1521.1111f, 17.0625f),
 		new Vector3D(2024.8190f, 1917.9425f, 12.3386f),
@@ -85,46 +81,46 @@ public class PlayerHandler extends AbstractShoebillContext
 		new Vector3D(-315.0575f, 1774.0636f, 43.6406f),
 		new Vector3D(1705.2347f, 1025.6808f, 10.8203f)
 	};
-	
-	
+
+
 	private Random random;
-	
-	
+
+
 	public PlayerHandler(EventManager rootEventManager)
 	{
 		super(rootEventManager);
 		random = new Random();
-		
+
 		init();
 	}
-	
+
 	@Override
 	protected void onInit()
 	{
 		eventManagerNode.registerHandler(PlayerConnectEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
-			
+
 			Color color = new Color(random.nextInt() << 8 | 0xFF);
 			while (color.getY()<128) color = new Color(random.nextInt() << 8 | 0xFF);
 			player.setColor(color);
-			
+
 			player.sendGameText(5000, 5, "Welcome to ~r~The New WL-World~w~!!");
-			player.sendDeathMessage(null, WeaponModel.CONNECT);
-			
+			Player.sendDeathMessageToAll(player, null, WeaponModel.CONNECT);
+
 			LanguageService langService = Service.get(LanguageService.class);
 			langService.showLanguageSelectionDialog(player, (p, l) ->
 			{
 				player.sendMessage(Color.PURPLE, "欢迎来到新未来世界服务器。");
 			});
 		});
-		
+
 		eventManagerNode.registerHandler(PlayerDisconnectEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
-			player.sendDeathMessage(null, WeaponModel.DISCONNECT);
+			Player.sendDeathMessageToAll(player, null, WeaponModel.DISCONNECT);
 		});
-		
+
 		eventManagerNode.registerHandler(PlayerSpawnEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
@@ -133,26 +129,26 @@ public class PlayerHandler extends AbstractShoebillContext
 			player.setWeather(0);
 			setRandomLocation(player);
 		});
-		
+
 		eventManagerNode.registerHandler(PlayerDeathEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
 			Player killer = e.getKiller();
-			
-			player.sendDeathMessage(killer, e.getReason());
+
+			Player.sendDeathMessageToAll(killer, player, e.getReason());
 		});
-		
+
 		eventManagerNode.registerHandler(PlayerRequestClassEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
 			setupForClassSelection(player);
 		});
-		
+
 		eventManagerNode.registerHandler(PlayerKeyStateChangeEvent.class, HandlerPriority.HIGHEST, (e) ->
 		{
 			Player player = e.getPlayer();
 			PlayerKeyState keyState = player.getKeyState();
-			
+
 			if (keyState.isAccurateKeyPressed(PlayerKey.NO))
 			{
 				showMainMenuDialog(player, null);
@@ -162,29 +158,29 @@ public class PlayerHandler extends AbstractShoebillContext
 				showGameListDialog(player, null);
 			}
 		});
-		
+
 		eventManagerNode.registerHandler(PlayerCommandEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
-			
+
 			String command = e.getCommand();
 			String[] splits = command.split(" ", 2);
-			
+
 			String operation = splits[0].toLowerCase();
 			Queue<String> args = new LinkedList<>();
-			
+
 			if (splits.length > 1)
 			{
 				String[] argsArray = splits[1].split(" ");
 				args.addAll(Arrays.asList(argsArray));
 			}
-			
+
 			switch (operation)
 			{
 			case "/pos":
 				player.sendMessage(Color.WHITE, player.getLocation().toString());
 				break;
-			
+
 			case "/tppos":
 				if (args.size() < 3)
 				{
@@ -192,14 +188,14 @@ public class PlayerHandler extends AbstractShoebillContext
 					e.setProcessed();
 					return;
 				}
-				
+
 				float x = NumberUtils.toFloat(args.poll());
 				float y = NumberUtils.toFloat(args.poll());
 				float z = NumberUtils.toFloat(args.poll());
 				player.setLocation(x, y, z);
 				e.setProcessed();
 				return;
-				
+
 			case "/world":
 				if (args.size() < 1)
 				{
@@ -207,12 +203,12 @@ public class PlayerHandler extends AbstractShoebillContext
 					e.setProcessed();
 					return;
 				}
-				
+
 				int worldId = NumberUtils.toInt(args.poll());
 				player.setWorld(worldId);
 				e.setProcessed();
 				return;
-				
+
 			case "/interior":
 				if (args.size() < 1)
 				{
@@ -220,17 +216,17 @@ public class PlayerHandler extends AbstractShoebillContext
 					e.setProcessed();
 					return;
 				}
-				
+
 				int interior = NumberUtils.toInt(args.poll());
 				player.setInterior(interior);
 				e.setProcessed();
 				return;
-				
+
 			case "/kill":
 				player.setHealth(0.0f);
 				e.setProcessed();
 				return;
-				
+
 			case "/codepage":
 				if (args.size() < 1)
 				{
@@ -238,14 +234,14 @@ public class PlayerHandler extends AbstractShoebillContext
 					e.setProcessed();
 					return;
 				}
-				
+
 				int codepage = NumberUtils.toInt(args.poll());
 				player.setCodepage(codepage);
 				e.setProcessed();
 				return;
 			}
 		});
-		
+
 		eventManagerNode.registerHandler(PlayerCommandEvent.class, HandlerPriority.BOTTOM, (e) ->
 		{
 			Player player = e.getPlayer();
@@ -253,27 +249,27 @@ public class PlayerHandler extends AbstractShoebillContext
 			e.setProcessed();
 		});
 	}
-	
+
 	@Override
 	protected void onDestroy()
 	{
-		
+
 	}
-	
+
 	public void showMainMenuDialog(Player player, AbstractDialog parentDialog)
 	{
 		if (parentDialog == null) player.playSound(1083);
-		
+
 		WlListDialog mainDialog = WlListDialog.create(player, rootEventManager)
 			.caption("新未来世界: 主菜单")
 			.build();
-		
+
 		MainMenuDialogExtendEvent dialogExtendEvent = new MainMenuDialogExtendEvent(player, eventManagerNode, mainDialog);
 		eventManagerNode.dispatchEvent(dialogExtendEvent);
-		
+
 		mainDialog.show();
 	}
-	
+
 	public void showGameListDialog(Player player, AbstractDialog parentDialog)
 	{
 		if (parentDialog == null) player.playSound(1083);
@@ -281,13 +277,13 @@ public class PlayerHandler extends AbstractShoebillContext
 		WlListDialog mainDialog = WlListDialog.create(player, rootEventManager)
 			.caption("新未来世界: 参与比赛")
 			.build();
-		
+
 		GameListDialogExtendEvent dialogShowEvent = new GameListDialogExtendEvent(player, eventManagerNode, mainDialog);
 		eventManagerNode.dispatchEvent(dialogShowEvent);
-		
+
 		mainDialog.show();
 	}
-	
+
 	private void setRandomLocation(Player player)
 	{
 		int rand = random.nextInt(RANDOM_SPAWN_POS.length);
