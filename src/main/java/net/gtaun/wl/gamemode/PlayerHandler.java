@@ -96,7 +96,7 @@ public class PlayerHandler extends AbstractShoebillContext
 		random = new Random();
 
 		commandManager = new PlayerCommandManager(rootEventManager);
-		commandManager.registerCommands(new ModeCommands());
+		commandManager.registerCommands(new ModeCommands(this));
 		commandManager.registerCommands(new TestCommands());
 
 		init();

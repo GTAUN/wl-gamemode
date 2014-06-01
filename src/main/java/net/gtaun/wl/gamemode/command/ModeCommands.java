@@ -2,12 +2,23 @@ package net.gtaun.wl.gamemode.command;
 
 import net.gtaun.shoebill.common.command.Command;
 import net.gtaun.shoebill.object.Player;
+import net.gtaun.wl.gamemode.PlayerHandler;
 
 public class ModeCommands
 {
-	public ModeCommands()
-	{
+	private PlayerHandler playerHandler;
 
+
+	public ModeCommands(PlayerHandler playerHandler)
+	{
+		this.playerHandler = playerHandler;
+	}
+
+	@Command
+	public boolean m(Player p)
+	{
+		playerHandler.showMainMenuDialog(p, null);
+		return true;
 	}
 
 	@Command
