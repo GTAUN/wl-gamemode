@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<repositories>
 		<repository>
 			<id>gtaun-public-repo</id>
@@ -9,41 +9,41 @@
 			<url>http://repo.gtaun.net/content/groups/public</url>
 		</repository>
 	</repositories>
-	
+
 	<parent>
 		<groupId>net.gtaun.parent</groupId>
 		<artifactId>gtaun-shoebill-resource-parent</artifactId>
 		<version>1</version>
 	</parent>
-	
+
 	<groupId>net.gtaun.wl</groupId>
 	<artifactId>wl-gamemode</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	
+
 	<name>wl-gamemode</name>
 	<description>GTAUN WL Gamemode</description>
 	<url>https://github.com/GTAUN/wl-gamemode</url>
-	
+
 	<properties>
 		<java.version>1.8</java.version>
 		<shoebill.version>1.0-SNAPSHOT</shoebill.version>
 		<build.number>0</build.number>
 	</properties>
-	
+
 	<licenses>
 		<license>
 			<name>GNU Affero General Public License, version 3 (AGPL-3.0)</name>
 			<url>http://www.gnu.org/licenses/agpl-3.0.html</url>
 		</license>
 	</licenses>
-	
+
 	<scm>
 		<url>https://github.com/GTAUN/wl-gamemode</url>
 		<connection>scm:git:git://github.com/GTAUN/wl-gamemode.git</connection>
 		<developerConnection>scm:git:git@github.com:GTAUN/wl-gamemode.git</developerConnection>
 	</scm>
-	
+
 	<developers>
 		<developer>
 			<name>MK124</name>
@@ -55,12 +55,12 @@
 			<timezone>+8</timezone>
 		</developer>
 	</developers>
-	
+
 	<ciManagement>
 		<system>jenkins</system>
 		<url>http://ci.gtaun.net</url>
 	</ciManagement>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>net.gtaun</groupId>
@@ -86,4 +86,21 @@
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<defaultGoal>clean install</defaultGoal>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<compilerArgument>-parameters</compilerArgument>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

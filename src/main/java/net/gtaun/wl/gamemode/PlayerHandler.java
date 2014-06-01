@@ -18,13 +18,10 @@
 
 package net.gtaun.wl.gamemode;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Random;
 
-
 import net.gtaun.shoebill.common.AbstractShoebillContext;
+import net.gtaun.shoebill.common.command.PlayerCommandManager;
 import net.gtaun.shoebill.common.dialog.AbstractDialog;
 import net.gtaun.shoebill.constant.PlayerKey;
 import net.gtaun.shoebill.constant.WeaponModel;
@@ -43,14 +40,13 @@ import net.gtaun.shoebill.service.Service;
 import net.gtaun.util.event.EventManager;
 import net.gtaun.util.event.HandlerPriority;
 import net.gtaun.wl.common.dialog.WlListDialog;
+import net.gtaun.wl.gamemode.command.ModeCommands;
+import net.gtaun.wl.gamemode.command.TestCommands;
 import net.gtaun.wl.gamemode.event.GameListDialogExtendEvent;
 import net.gtaun.wl.gamemode.event.MainMenuDialogExtendEvent;
 import net.gtaun.wl.lang.LanguageService;
 import net.gtaun.wl.lang.LocalizedStringSet;
-
 import net.gtaun.wl.lang.LocalizedStringSet.PlayerStringSet;
-
-import org.apache.commons.lang3.math.NumberUtils;
 
 public class PlayerHandler extends AbstractShoebillContext
 {
@@ -90,6 +86,8 @@ public class PlayerHandler extends AbstractShoebillContext
 	private final LocalizedStringSet localizedStringSet;
 	private final Random random;
 
+	private PlayerCommandManager commandManager;
+
 
 	public PlayerHandler(WlGamemode gamemode, EventManager rootEventManager)
 	{
@@ -97,12 +95,18 @@ public class PlayerHandler extends AbstractShoebillContext
 		localizedStringSet = gamemode.getLocalizedStringSet();
 		random = new Random();
 
+		commandManager = new PlayerCommandManager(rootEventManager);
+		commandManager.registerCommands(new ModeCommands());
+		commandManager.registerCommands(new TestCommands());
+
 		init();
 	}
 
 	@Override
 	protected void onInit()
 	{
+		commandManager.installCommandHandler(HandlerPriority.NORMAL);
+
 		eventManagerNode.registerHandler(PlayerConnectEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
@@ -166,89 +170,6 @@ public class PlayerHandler extends AbstractShoebillContext
 			}
 		});
 
-		eventManagerNode.registerHandler(PlayerCommandEvent.class, (e) ->
-		{
-			Player player = e.getPlayer();
-
-			String command = e.getCommand();
-			String[] splits = command.split(" ", 2);
-
-			String operation = splits[0].toLowerCase();
-			Queue<String> args = new LinkedList<>();
-
-			if (splits.length > 1)
-			{
-				String[] argsArray = splits[1].split(" ");
-				args.addAll(Arrays.asList(argsArray));
-			}
-
-			switch (operation)
-			{
-			case "/pos":
-				player.sendMessage(Color.WHITE, player.getLocation().toString());
-				break;
-
-			case "/tppos":
-				if (args.size() < 3)
-				{
-					player.sendMessage(Color.WHITE, "Usage: /tppos [x] [y] [z]");
-					e.setProcessed();
-					return;
-				}
-
-				float x = NumberUtils.toFloat(args.poll());
-				float y = NumberUtils.toFloat(args.poll());
-				float z = NumberUtils.toFloat(args.poll());
-				player.setLocation(x, y, z);
-				e.setProcessed();
-				return;
-
-			case "/world":
-				if (args.size() < 1)
-				{
-					player.sendMessage(Color.WHITE, "Usage: /world [id]");
-					e.setProcessed();
-					return;
-				}
-
-				int worldId = NumberUtils.toInt(args.poll());
-				player.setWorld(worldId);
-				e.setProcessed();
-				return;
-
-			case "/interior":
-				if (args.size() < 1)
-				{
-					player.sendMessage(Color.WHITE, "Usage: /interior [id]");
-					e.setProcessed();
-					return;
-				}
-
-				int interior = NumberUtils.toInt(args.poll());
-				player.setInterior(interior);
-				e.setProcessed();
-				return;
-
-			case "/kill":
-				player.setHealth(0.0f);
-				e.setProcessed();
-				return;
-
-			case "/codepage":
-				if (args.size() < 1)
-				{
-					player.sendMessage(Color.WHITE, "Usage: /codepage [val]");
-					e.setProcessed();
-					return;
-				}
-
-				int codepage = NumberUtils.toInt(args.poll());
-				player.setCodepage(codepage);
-				e.setProcessed();
-				return;
-			}
-		});
-
 		eventManagerNode.registerHandler(PlayerCommandEvent.class, HandlerPriority.BOTTOM, (e) ->
 		{
 			Player player = e.getPlayer();
@@ -262,7 +183,7 @@ public class PlayerHandler extends AbstractShoebillContext
 	@Override
 	protected void onDestroy()
 	{
-
+		commandManager.uninstallAllHandlers();
 	}
 
 	public void showMainMenuDialog(Player player, AbstractDialog parentDialog)
