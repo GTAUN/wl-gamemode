@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
+
 import net.gtaun.shoebill.common.AbstractShoebillContext;
 import net.gtaun.shoebill.common.dialog.AbstractDialog;
 import net.gtaun.shoebill.constant.PlayerKey;
@@ -45,6 +46,9 @@ import net.gtaun.wl.common.dialog.WlListDialog;
 import net.gtaun.wl.gamemode.event.GameListDialogExtendEvent;
 import net.gtaun.wl.gamemode.event.MainMenuDialogExtendEvent;
 import net.gtaun.wl.lang.LanguageService;
+import net.gtaun.wl.lang.LocalizedStringSet;
+
+import net.gtaun.wl.lang.LocalizedStringSet.PlayerStringSet;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -83,12 +87,14 @@ public class PlayerHandler extends AbstractShoebillContext
 	};
 
 
-	private Random random;
+	private final LocalizedStringSet localizedStringSet;
+	private final Random random;
 
 
-	public PlayerHandler(EventManager rootEventManager)
+	public PlayerHandler(WlGamemode gamemode, EventManager rootEventManager)
 	{
 		super(rootEventManager);
+		localizedStringSet = gamemode.getLocalizedStringSet();
 		random = new Random();
 
 		init();
@@ -100,18 +106,19 @@ public class PlayerHandler extends AbstractShoebillContext
 		eventManagerNode.registerHandler(PlayerConnectEvent.class, (e) ->
 		{
 			Player player = e.getPlayer();
+			PlayerStringSet stringSet = localizedStringSet.getStringSet(player);
 
 			Color color = new Color(random.nextInt() << 8 | 0xFF);
 			while (color.getY()<128) color = new Color(random.nextInt() << 8 | 0xFF);
 			player.setColor(color);
 
-			player.sendGameText(5000, 5, "Welcome to ~r~The New WL-World~w~!!");
+			player.sendGameText(5000, 5, stringSet.get("GameText.Welcome"));
 			Player.sendDeathMessageToAll(player, null, WeaponModel.CONNECT);
 
 			LanguageService langService = Service.get(LanguageService.class);
 			langService.showLanguageSelectionDialog(player, (p, l) ->
 			{
-				player.sendMessage(Color.PURPLE, "欢迎来到新未来世界服务器。");
+				stringSet.sendMessage(Color.PURPLE, "Message.Welcome");
 			});
 		});
 
@@ -245,7 +252,9 @@ public class PlayerHandler extends AbstractShoebillContext
 		eventManagerNode.registerHandler(PlayerCommandEvent.class, HandlerPriority.BOTTOM, (e) ->
 		{
 			Player player = e.getPlayer();
-			player.sendMessage(Color.RED, "未知命令。");
+			PlayerStringSet stringSet = localizedStringSet.getStringSet(player);
+
+			stringSet.sendMessage(Color.RED, "Message.UnknownCommand");
 			e.setProcessed();
 		});
 	}
@@ -258,10 +267,11 @@ public class PlayerHandler extends AbstractShoebillContext
 
 	public void showMainMenuDialog(Player player, AbstractDialog parentDialog)
 	{
+		PlayerStringSet stringSet = localizedStringSet.getStringSet(player);
 		if (parentDialog == null) player.playSound(1083);
 
 		WlListDialog mainDialog = WlListDialog.create(player, rootEventManager)
-			.caption("新未来世界: 主菜单")
+			.caption(stringSet.get("Dialog.MainMenuDialog.Caption"))
 			.build();
 
 		MainMenuDialogExtendEvent dialogExtendEvent = new MainMenuDialogExtendEvent(player, eventManagerNode, mainDialog);
@@ -272,10 +282,11 @@ public class PlayerHandler extends AbstractShoebillContext
 
 	public void showGameListDialog(Player player, AbstractDialog parentDialog)
 	{
+		PlayerStringSet stringSet = localizedStringSet.getStringSet(player);
 		if (parentDialog == null) player.playSound(1083);
 
 		WlListDialog mainDialog = WlListDialog.create(player, rootEventManager)
-			.caption("新未来世界: 参与比赛")
+			.caption(stringSet.get("Dialog.GameListDialog.Caption"))
 			.build();
 
 		GameListDialogExtendEvent dialogShowEvent = new GameListDialogExtendEvent(player, eventManagerNode, mainDialog);

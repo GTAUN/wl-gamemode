@@ -25,18 +25,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
-import net.gtaun.shoebill.SampObjectManager;
 import net.gtaun.shoebill.constant.PlayerMarkerMode;
+import net.gtaun.shoebill.object.Pickup;
 import net.gtaun.shoebill.object.Server;
 import net.gtaun.shoebill.object.World;
 import net.gtaun.shoebill.resource.Gamemode;
-import net.gtaun.util.event.EventManager;
+import net.gtaun.shoebill.service.Service;
+import net.gtaun.wl.lang.LanguageService;
+import net.gtaun.wl.lang.LocalizedStringSet;
 
 import org.slf4j.Logger;
 
 /**
  * 新未来世界的主类。
- * 
+ *
  * @author MK124
  */
 public class WlGamemode extends Gamemode
@@ -46,40 +48,41 @@ public class WlGamemode extends Gamemode
 	{
 		return logger;
 	}
-	
-	
+
+
+	private LocalizedStringSet localizedStringSet;
 	private PlayerHandler playerManager;
-	
-	
+
+
 	public WlGamemode()
 	{
-		
+
 	}
-	
+
 	@Override
 	protected void onEnable() throws Throwable
 	{
 		logger = getLogger();
-		
-		final SampObjectManager objectManager = SampObjectManager.get();
-		final EventManager eventManager = getEventManager();
-		
+
+		LanguageService languageService = Service.get(LanguageService.class);
+		localizedStringSet = languageService.createStringSet(new File(getDataDir(), "text"));
+
 		Server server = Server.get();
 		World world = World.get();
-		
+
 		server.setGamemodeText("The New WL-World");
 		world.showPlayerMarkers(PlayerMarkerMode.GLOBAL);
 		world.showNameTags(true);
 		world.enableStuntBonusForAll(false);
-		
-		objectManager.createPickup(371, 15, 1710.3359f, 1614.3585f, 10.1191f, 0);
-		objectManager.createPickup(371, 15, 1964.4523f, 1917.0341f, 130.9375f, 0);
-		objectManager.createPickup(371, 15, 2055.7258f, 2395.8589f, 150.4766f, 0);
-		objectManager.createPickup(371, 15, 2265.0120f, 1672.3837f, 94.9219f, 0);
-		objectManager.createPickup(371, 15, 2265.9739f, 1623.4060f, 94.9219f, 0);
-		
-		playerManager = new PlayerHandler(eventManager);
-		
+
+		Pickup.create(371, 15, 1710.3359f, 1614.3585f, 10.1191f, 0);
+		Pickup.create(371, 15, 1964.4523f, 1917.0341f, 130.9375f, 0);
+		Pickup.create(371, 15, 2055.7258f, 2395.8589f, 150.4766f, 0);
+		Pickup.create(371, 15, 2265.0120f, 1672.3837f, 94.9219f, 0);
+		Pickup.create(371, 15, 2265.9739f, 1623.4060f, 94.9219f, 0);
+
+		playerManager = new PlayerHandler(this, getEventManager());
+
 		File playerClassFile = new File(getDataDir(), "class.txt");
 		loadClass(world, playerClassFile);
 	}
@@ -91,6 +94,11 @@ public class WlGamemode extends Gamemode
 		playerManager = null;
 	}
 
+	public LocalizedStringSet getLocalizedStringSet()
+	{
+		return localizedStringSet;
+	}
+
 	private void loadClass(World world, File file)
 	{
 		BufferedReader reader;
@@ -98,7 +106,7 @@ public class WlGamemode extends Gamemode
 		{
 			logger.info("loading " + file);
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8")));
-			
+
 			int count = 0;
 			while (reader.ready())
 			{
@@ -106,7 +114,7 @@ public class WlGamemode extends Gamemode
 				String[] datas = data.split(",");
 
 				if (data.length() == 0 || data.charAt(0) == '/' || datas.length < 11) continue;
-				
+
 				try
 				{
 					int i = 0;
@@ -122,7 +130,7 @@ public class WlGamemode extends Gamemode
 					int weapon3 = Integer.parseInt(datas[i++].trim());
 					int ammo3 = Integer.parseInt(datas[i++].trim());
 					world.addPlayerClass(modelId, x, y, z, angle, weapon1, ammo1, weapon2, ammo2, weapon3, ammo3);
-					
+
 					count++;
 				}
 				catch (NumberFormatException e)
@@ -130,7 +138,7 @@ public class WlGamemode extends Gamemode
 					logger.info("Skip: " + data);
 				}
 			}
-			
+
 			logger.info("Created " + count + " classes.");
 			reader.close();
 		}
