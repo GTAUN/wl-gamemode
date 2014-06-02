@@ -80,6 +80,9 @@ public class WlGamemode extends Gamemode
 
 		File playerClassFile = new File(getDataDir(), "class.txt");
 		SampDataLoader.loadClass(world, playerClassFile);
+
+		File vehicleFilesDir = new File(getDataDir(), "vehicles/");
+		if (vehicleFilesDir.isDirectory()) SampDataLoader.loadVehicle(vehicleFilesDir);
 	}
 
 	@Override

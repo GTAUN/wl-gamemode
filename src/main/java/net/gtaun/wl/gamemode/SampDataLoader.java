@@ -12,6 +12,7 @@ import java.util.Queue;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.gtaun.shoebill.object.Vehicle;
 import net.gtaun.shoebill.object.World;
 
 public class SampDataLoader
@@ -64,5 +65,56 @@ public class SampDataLoader
 		{
 			WlGamemode.logger().info("Can't initialize classes, please check your " + file);
 		}
+	}
+
+	public static void loadVehicle(File dir)
+	{
+		File files[] = dir.listFiles();
+
+		int count = 0;
+		for (File file : files)
+		{
+			WlGamemode.logger().info("loading " + file);
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))))
+			{
+				while (reader.ready())
+				{
+					String line = reader.readLine();
+					if (StringUtils.isBlank(line)) continue;
+
+					line = StringUtils.split(line, ';')[0];
+
+					String[] paramArray = line.split("[, ]");
+					if (paramArray.length != 7) continue;
+
+					Queue<String> params = new ArrayDeque<>();
+					Collections.addAll(params, paramArray);
+
+					try
+					{
+						int modelId = Integer.parseInt(params.poll());
+						float x = Float.parseFloat(params.poll());
+						float y = Float.parseFloat(params.poll());
+						float z = Float.parseFloat(params.poll());
+						float angle = Float.parseFloat(params.poll());
+						int color1 = Integer.parseInt(params.poll());
+						int color2 = Integer.parseInt(params.poll());
+						Vehicle.create(modelId, x, y, z, angle, color1, color2, 0);
+
+						count++;
+					}
+					catch (NumberFormatException e)
+					{
+						WlGamemode.logger().info("Skip: " + line);
+					}
+				}
+			}
+			catch (IOException e)
+			{
+				System.out.println("Can't initialize vehicles, please check your " + file + " file.");
+			}
+		}
+
+		System.out.println("Created " + count + " vehicles.");
 	}
 }

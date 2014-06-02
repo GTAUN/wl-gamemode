@@ -42,6 +42,7 @@ import net.gtaun.util.event.HandlerPriority;
 import net.gtaun.wl.common.dialog.WlListDialog;
 import net.gtaun.wl.gamemode.command.ModeCommands;
 import net.gtaun.wl.gamemode.command.TestCommands;
+import net.gtaun.wl.gamemode.dialog.HelpDialog;
 import net.gtaun.wl.gamemode.event.GameListDialogExtendEvent;
 import net.gtaun.wl.gamemode.event.MainMenuDialogExtendEvent;
 import net.gtaun.wl.lang.LanguageService;
@@ -82,7 +83,7 @@ public class PlayerHandler extends AbstractShoebillContext
 		new Vector3D(1705.2347f, 1025.6808f, 10.8203f)
 	};
 
-
+	private final WlGamemode gamemode;
 	private final LocalizedStringSet localizedStringSet;
 	private final Random random;
 
@@ -92,11 +93,14 @@ public class PlayerHandler extends AbstractShoebillContext
 	public PlayerHandler(WlGamemode gamemode, EventManager rootEventManager)
 	{
 		super(rootEventManager);
-		localizedStringSet = gamemode.getLocalizedStringSet();
+
+		this.gamemode = gamemode;
+		this.localizedStringSet = gamemode.getLocalizedStringSet();
+
 		random = new Random();
 
 		commandManager = new PlayerCommandManager(rootEventManager);
-		commandManager.registerCommands(new ModeCommands(this));
+		commandManager.registerCommands(new ModeCommands(gamemode, this));
 		commandManager.registerCommands(new TestCommands());
 
 		init();
@@ -186,6 +190,11 @@ public class PlayerHandler extends AbstractShoebillContext
 		commandManager.uninstallAllHandlers();
 	}
 
+	public EventManager getEventManager()
+	{
+		return eventManagerNode;
+	}
+
 	public void showMainMenuDialog(Player player, AbstractDialog parentDialog)
 	{
 		PlayerStringSet stringSet = localizedStringSet.getStringSet(player);
@@ -198,6 +207,7 @@ public class PlayerHandler extends AbstractShoebillContext
 		MainMenuDialogExtendEvent dialogExtendEvent = new MainMenuDialogExtendEvent(player, eventManagerNode, mainDialog);
 		eventManagerNode.dispatchEvent(dialogExtendEvent);
 
+		mainDialog.addItem(stringSet.get("Dialog.MainMenuDialog.Help"), (i) -> HelpDialog.create(player, eventManagerNode, gamemode, mainDialog).show());
 		mainDialog.show();
 	}
 
