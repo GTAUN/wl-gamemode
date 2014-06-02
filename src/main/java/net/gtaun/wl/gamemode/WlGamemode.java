@@ -18,12 +18,7 @@
 
 package net.gtaun.wl.gamemode;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 
 import net.gtaun.shoebill.constant.PlayerMarkerMode;
 import net.gtaun.shoebill.object.Pickup;
@@ -84,7 +79,7 @@ public class WlGamemode extends Gamemode
 		playerManager = new PlayerHandler(this, getEventManager());
 
 		File playerClassFile = new File(getDataDir(), "class.txt");
-		loadClass(world, playerClassFile);
+		SampDataLoader.loadClass(world, playerClassFile);
 	}
 
 	@Override
@@ -97,54 +92,5 @@ public class WlGamemode extends Gamemode
 	public LocalizedStringSet getLocalizedStringSet()
 	{
 		return localizedStringSet;
-	}
-
-	private void loadClass(World world, File file)
-	{
-		BufferedReader reader;
-		try
-		{
-			logger.info("loading " + file);
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8")));
-
-			int count = 0;
-			while (reader.ready())
-			{
-				String data = reader.readLine().trim();
-				String[] datas = data.split(",");
-
-				if (data.length() == 0 || data.charAt(0) == '/' || datas.length < 11) continue;
-
-				try
-				{
-					int i = 0;
-					int modelId = Integer.parseInt(datas[i++].trim());
-					float x = Float.parseFloat(datas[i++].trim());
-					float y = Float.parseFloat(datas[i++].trim());
-					float z = Float.parseFloat(datas[i++].trim());
-					float angle = Float.parseFloat(datas[i++].trim());
-					int weapon1 = Integer.parseInt(datas[i++].trim());
-					int ammo1 = Integer.parseInt(datas[i++].trim());
-					int weapon2 = Integer.parseInt(datas[i++].trim());
-					int ammo2 = Integer.parseInt(datas[i++].trim());
-					int weapon3 = Integer.parseInt(datas[i++].trim());
-					int ammo3 = Integer.parseInt(datas[i++].trim());
-					world.addPlayerClass(modelId, x, y, z, angle, weapon1, ammo1, weapon2, ammo2, weapon3, ammo3);
-
-					count++;
-				}
-				catch (NumberFormatException e)
-				{
-					logger.info("Skip: " + data);
-				}
-			}
-
-			logger.info("Created " + count + " classes.");
-			reader.close();
-		}
-		catch (IOException e)
-		{
-			logger.info("Can't initialize classes, please check your " + file);
-		}
 	}
 }
