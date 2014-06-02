@@ -6,6 +6,10 @@ There is no connection between the New WL-World and WL-World, but we still want 
 
 DESIGN CONCEPT
 -----------------
+* Focus on the user friendly design.
+* Targeting on powerful and good visual qualities.
+* Using dialogs as the main user interface, using the command line as secondary function.
+* Using hot-keys in order to simplify basic instructions.
 * Provide statistics and report function as far as possible.
 * Provide the re-edit function for all user data which generated in game as much as we can.
 * Ensure that the functions in the project are dynamic-adaptatable.
@@ -14,15 +18,12 @@ DESIGN CONCEPT
 
 FEATURE 
 -----------------
-* Focus on the user friendly design.
-* Targeting on powerful and good visual qualities.
-* Multi-language Support.
-* Using dialogs as the main user interface, using the command line as secondary function.
-* Flexible dialog design, you may add sections(in dialogs) when needed.
-* Using hot-keys in order to simplify basic instructions.
-* Supports the translation between Simplified Chinese and Traditional Chinese （Based on Shoebill).
 * The project may contain many components, you may decide whether part of the components you want to enabled or disable at any time.
-* Providing a interactive interface for all components, which allows coordination with other components.
+* Providing a interactive service interface for all components, which allows coordination with other components.
+* Component/Service based development of low coupling.
+* Flexible dialog design, you may add sections(in dialogs) when needed.
+* Multi-language Support.
+* Supports the translation between Simplified Chinese and Traditional Chinese （Based on Shoebill).
 * Using YAML as the format of the configuration files.
 * Using MongoDB Database (and Morphia ORM) as data storage.
 
@@ -36,16 +37,16 @@ These components are currently planned:
 * `wl-vehicle-manager` Vehicle manager (1.0)
 
 (In progress)
-* `wl-common` The libraries tool-kit of the project
+* `wl-common` Common library of the project
 * `wl-gamemode` main component, in charge of coordinating the work of components
 * `wl-race` Advance racing system
-* `wl-teleport` Teleport system
+* `wl-teleport` Teleport & world switching system
 * `wl-chat-channel` Chatting system
 
 (Planned)
 * `wl-auth` Account authentication and permission system
 * `wl-admin` Administrator system
-* `wl-simple-dm` Simple deathmatch system
+* `wl-simple-dm` Simple deathmatch
 * `wl-mail` Mail system
 
 (Pending)
@@ -55,14 +56,14 @@ These components are currently planned:
 DEPENDENT COMPONMENTS/OPEN SOURCE PROJECTS
 -----------------
 
-* `shoebill-common` Shoebill generic libraries tool-kit
-* `common-lang3` Apache Java generic libraries tool-kit
+* `shoebill-common` Shoebill common library
+* `common-lang3` Apache Java common library
 * `mongo-java-driver` Mongo DB Java database driver
-* `morphia` ORM
+* `morphia` Mongo DB ORM
 
 RECOMMAND COMPONENT
 -----------------
-* `mk-plugin-manager` MK 's Shoebill plugin- manager.
+* `mk-plugin-manager` MK's Shoebill plugin manager
 
 OPEN SOURCE LICENSE
 -----------------
