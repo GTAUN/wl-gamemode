@@ -39,7 +39,7 @@ These components are currently planned:
 (In progress)
 * `wl-common` Common library of the project
 * `wl-gamemode` main component, in charge of coordinating the work of components
-* `wl-race` Advance racing system
+* `wl-race` Advanced racing system
 * `wl-teleport` Teleport & world switching system
 * `wl-chat-channel` Chatting system
 
@@ -61,7 +61,7 @@ DEPENDENT COMPONMENTS/OPEN SOURCE PROJECTS
 * `mongo-java-driver` Mongo DB Java database driver
 * `morphia` Mongo DB ORM
 
-RECOMMAND COMPONENT
+RECOMMEND COMPONENTS
 -----------------
 * `mk-plugin-manager` MK's Shoebill plugin manager
 
